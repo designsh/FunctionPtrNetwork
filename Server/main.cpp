@@ -12,6 +12,7 @@ WSADATA wsa;
 SOCKET skt, *Client_skt;
 SOCKADDR_IN* Client;
 int* Client_size, ClientMax;
+int ConnectCount = 0;
 
 void ReceiveFunction(SOCKET& s, int _ClientNum)
 {
@@ -38,7 +39,6 @@ void AcceptFunction()
 	{
 		Client_size[i] = sizeof(Client[i]);
 		Client_skt[i] = accept(skt, (SOCKADDR*)&Client[i], &Client_size[i]);
-		
 		if (Client_skt[i] == INVALID_SOCKET)
 		{
 			cout << "Accept Eror" << endl;
@@ -52,8 +52,11 @@ void AcceptFunction()
 		ZeroMemory(client_num, sizeof(client_num));
 		sprintf_s(client_num, "%d", i);
 		send(Client_skt[i], client_num, static_cast<int>(strlen(client_num)), 0);
+		//++ConnectCount;
 		thread(ReceiveFunction, std::ref(Client_skt[i]), i).detach();
 	}
+
+	return;
 }
 
 void SocketOpen(int _Port)
@@ -101,49 +104,43 @@ void SocketOpen(int _Port)
 	thread(AcceptFunction).detach();
 
 	// Server Socket Send Process
-	char ExitMsg[PACKET_SIZE] = {};
 	char msg[PACKET_SIZE] = {};
 	char sendnum[PACKET_SIZE] = {};
 
 	while (true)
 	{
-		cout << "종료하시겠습니까?(Y:종료) >> ";
-		cin >> ExitMsg;
+		cout << "보낼 데이터 입력 >> ";
+		cin >> msg;
 
-		if (!strcmp(ExitMsg, "Y"))
+		if (!strcmp(msg, "exit"))
 		{
 			break;
 		}
+
+		cout << "대상 클라이언트를 입력(all:모두) >> ";
+		cin >> sendnum;
+
+		if (!strcmp(sendnum, "all"))
+		{
+			for (int i = 0; i < ClientMax; ++i)
+			{
+				send(Client_skt[i], msg, static_cast<int>(strlen(msg)), 0);
+			}
+		}
 		else
 		{
-			cout << "보낼 데이터를 입력 >>";
-			cin >> msg;
-
-			cout << "대상 클라이언트를 입력(all:모두) >> ";
-			cin >> sendnum;
-
-			if (!strcmp(sendnum, "all"))
-			{
-				for (int i = 0; i < ClientMax; ++i)
-				{
-					send(Client_skt[i], msg, static_cast<int>(strlen(msg)), 0);
-				}
-			}
-			else
-			{
-				send(Client_skt[atoi(sendnum)], msg, static_cast<int>(strlen(msg)), 0);
-			}
+			send(Client_skt[atoi(sendnum)], msg, static_cast<int>(strlen(msg)), 0);
 		}
-
-		// Server Exit
-		for (int i = 0; i < ClientMax; ++i)
-		{
-			closesocket(Client_skt[i]);
-		}
-		closesocket(skt);
-		WSACleanup();
-		return;
 	}
+
+	// Server Exit
+	for (int i = 0; i < ClientMax; ++i)
+	{
+		closesocket(Client_skt[i]);
+	}
+	closesocket(skt);
+	WSACleanup();
+	return;
 }
 
 int main()
