@@ -38,23 +38,23 @@ int main()
 		}
 		case NET::CLIENT:
 		{
-			//Client = new SocketClient();
+			std::string IP;
+			int Port = 0;
 
+			cout << "아이피 설정 >>> ";
+			cin >> IP;
+			cout << "포트 설정 >>> ";
+			cin >> Port;
 
-
-
-
-
-			
+			Client = new SocketClient();
+			Client->Initalize();
+			if (false == Client->ConnectClient(IP, Port))
+			{
+				cout << "서버 연결 실패" << endl;
+			}
 			break;
 		}
 	}
-
-	
-
-
-
-
 
 	// 소멸자 호출
 	if (nullptr != Server)

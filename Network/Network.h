@@ -41,6 +41,4 @@ private:
 public:
 protected:
 private:
-
 };
-

@@ -108,6 +108,7 @@ void SocketServer::CloseServer()
 
 void SocketServer::Send()
 {
+
 }
 
 void SocketServer::AcceptFunction()
@@ -142,9 +143,9 @@ void SocketServer::ReceiveFunction(SOCKET _Socket)
 		if (0 < retValue)
 		{
 			// 수신한 패킷이 존재
-			int a = 0;
+			
 
-
+			cout << "수신 했다!!!!" << endl;
 
 
 
