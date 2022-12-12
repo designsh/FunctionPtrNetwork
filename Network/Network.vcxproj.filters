@@ -1,0 +1,44 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Packet">
+      <UniqueIdentifier>{3fdf6691-0680-406d-b786-20fe313a2415}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Socket">
+      <UniqueIdentifier>{6540618d-bfbc-46a2-806f-20d32160dec1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Socket\Client">
+      <UniqueIdentifier>{ff11be64-a1ef-4f10-8900-f69fda1d9cc6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Socket\Server">
+      <UniqueIdentifier>{a4dd91cc-6747-4b1d-880c-df1b950b8c01}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Packet\Handler">
+      <UniqueIdentifier>{f7081231-2b56-4569-afa8-e54c0587a7f4}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="SocketServer.cpp">
+      <Filter>Socket\Server</Filter>
+    </ClCompile>
+    <ClCompile Include="Network.cpp">
+      <Filter>Socket</Filter>
+    </ClCompile>
+    <ClCompile Include="SocketClient.cpp">
+      <Filter>Socket\Client</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="SocketServer.h">
+      <Filter>Socket\Server</Filter>
+    </ClInclude>
+    <ClInclude Include="Network.h">
+      <Filter>Socket</Filter>
+    </ClInclude>
+    <ClInclude Include="SocketClient.h">
+      <Filter>Socket\Client</Filter>
+    </ClInclude>
+    <ClInclude Include="mainHeader.h" />
+  </ItemGroup>
+</Project>
