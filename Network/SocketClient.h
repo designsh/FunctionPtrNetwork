@@ -11,9 +11,10 @@ public:
 	bool ConnectClient(const std::string& _IP, int _Port);
 	void DisConnectClient();
 
-protected:
-	void Send() override;
+public:
+	void Send(const char* Data, size_t _Size) override;
 
+protected:
 private:
 	void ReceiveFunction(SOCKET _Socket);
 
@@ -41,8 +42,5 @@ private:
 
 private:
 	std::thread* ReceiveThread_;
-
-private: // Packet Value
-
 };
 

@@ -1,6 +1,7 @@
 #include "Network.h"
 
 Network::Network()
+	: Dispatcher_()
 {
 }
 

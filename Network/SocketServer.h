@@ -7,13 +7,23 @@ public:
 	static bool bOpen;
 
 public:
+	inline int GetAcceptID() const
+	{
+		return static_cast<int>(ClientList_.size()) - 1;
+	}
+
+public:
+	void SetAcceptCallBack(std::function<void(SOCKET)> _AcceptCallBack);
+
+public:
 	void Initalize();
 	bool OpenServer(int _Port);
 	void CloseServer();
 
-protected:
-	void Send() override;
+public:
+	void Send(const char* Data, size_t _Size) override;
 
+protected:
 private:
 	void AcceptFunction();
 	void ReceiveFunction(SOCKET _Socket);
@@ -40,12 +50,10 @@ private:
 private:
 	SOCKET Socket_;
 	std::thread* AcceptThread_;
+	std::function<void(SOCKET)> AcceptCallBack_;
 
 private:
 	std::vector<SOCKET> ClientList_;
 	std::map<SOCKET, std::thread> ClientReceiveThreadList_;
-
-private: // Packet Value
-
 };
 

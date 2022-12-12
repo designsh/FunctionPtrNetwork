@@ -6,3 +6,11 @@ enum class NET
 	CLIENT,
 	MAX
 };
+
+enum class PACKET_TYPE
+{
+	LOGIN,
+	CHAT,
+
+	MAX
+};

@@ -12,6 +12,8 @@
 #include <string>
 #include <functional>
 
+#include "Dispatcher.h"
+
 #define PACKET_SIZE 1024
 
 #pragma comment (lib, "ws2_32")
@@ -21,8 +23,16 @@ using namespace std;
 class Network
 {
 public:
+	void SendPacket(Packet& Data)
+	{
+		Serializer Ser;
+		Data.SerializePacket(Ser);
+
+		Send(reinterpret_cast<char*>(Ser.GetDataPtr()), Ser.GetOffSet());
+	}
+
 protected:
-	virtual void Send() = 0;
+	virtual void Send(const char* Data, size_t _Size) = 0;
 
 private:
 
@@ -39,6 +49,8 @@ private:
 	Network& operator=(Network&& _rhs) = delete;
 
 public:
+	Dispatcher Dispatcher_;
+
 protected:
 private:
 };

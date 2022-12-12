@@ -127,14 +127,23 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Dispatcher.cpp" />
+    <ClCompile Include="GameMath.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Network.cpp" />
+    <ClCompile Include="Packet.cpp" />
+    <ClCompile Include="Serializer.cpp" />
     <ClCompile Include="SocketClient.cpp" />
     <ClCompile Include="SocketServer.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Dispatcher.h" />
+    <ClInclude Include="GameMath.h" />
     <ClInclude Include="mainHeader.h" />
     <ClInclude Include="Network.h" />
+    <ClInclude Include="Packet.h" />
+    <ClInclude Include="Packet_Chat.h" />
+    <ClInclude Include="Serializer.h" />
     <ClInclude Include="SocketClient.h" />
     <ClInclude Include="SocketServer.h" />
   </ItemGroup>

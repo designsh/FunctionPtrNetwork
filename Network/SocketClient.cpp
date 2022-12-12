@@ -72,17 +72,12 @@ void SocketClient::DisConnectClient()
 		delete ReceiveThread_;
 		ReceiveThread_ = nullptr;
 	}
-
-	//if (nullptr != packetHandler_)
-	//{
-	//	delete packetHandler_;
-	//	packetHandler_ = nullptr;
-	//}
 }
 
-void SocketClient::Send()
+void SocketClient::Send(const char* Data, size_t _Size)
 {
-
+	// 서버와 연결된 소켓으로 송신
+	send(Socket_, Data, static_cast<int>(_Size), 0);
 }
 
 void SocketClient::ReceiveFunction(SOCKET _Socket)
@@ -95,9 +90,7 @@ void SocketClient::ReceiveFunction(SOCKET _Socket)
 		if (0 < retValue)
 		{
 			// 패킷 수신처리
-
-			cout << "수신 했다!!!!" << endl;
-
+			Dispatcher_.PacketCheck(Packet);
 		}
 
 		if (SOCKET_ERROR == retValue)
@@ -121,5 +114,5 @@ SocketClient::SocketClient()
 
 SocketClient::~SocketClient()
 {
-	CloseClient();
+	DisConnectClient();
 }

@@ -2,6 +2,11 @@
 
 bool SocketServer::bOpen = false;
 
+void SocketServer::SetAcceptCallBack(std::function<void(SOCKET)> _AcceptCallBack)
+{
+	AcceptCallBack_ = _AcceptCallBack;
+}
+
 void SocketServer::Initalize()
 {
 	WSAData wsaData;
@@ -93,22 +98,17 @@ void SocketServer::CloseServer()
 		Begin++;
 	}
 
-	//if (nullptr != packetHandler_)
-	//{
-	//	delete packetHandler_;
-	//	packetHandler_ = nullptr;
-	//}
-
-
-
-
 	// Server Open Flag Off
 	bOpen = false;
 }
 
-void SocketServer::Send()
+void SocketServer::Send(const char* Data, size_t _Size)
 {
-
+	// 연결된 모든 클라이언트에게 전달
+	for (size_t i = 0; i < ClientList_.size(); i++)
+	{
+		send(ClientList_[i], Data, static_cast<int>(_Size), 0);
+	}
 }
 
 void SocketServer::AcceptFunction()
@@ -125,8 +125,13 @@ void SocketServer::AcceptFunction()
 
 		Mutex_.lock();
 
+		// 연결된 클라이언트 목록에 추가
 		ClientList_.push_back(NewClient);
 
+		// 연결시 실행할 함수 
+		AcceptCallBack_(Socket_);
+
+		// 수신스레드 할당
 		std::thread newReceiveThread(std::bind(&SocketServer::ReceiveFunction, this, NewClient));
 		ClientReceiveThreadList_.insert(std::pair<SOCKET, std::thread>(NewClient, std::move(newReceiveThread)));
 
@@ -137,20 +142,12 @@ void SocketServer::AcceptFunction()
 void SocketServer::ReceiveFunction(SOCKET _Socket)
 {
 	char Packet[PACKET_SIZE] = { 0 };
+
 	while (true)
 	{
-		int retValue = recv(_Socket, Packet, sizeof(Packet), 0);
-		if (0 < retValue)
-		{
-			// 수신한 패킷이 존재
-			
 
-			cout << "수신 했다!!!!" << endl;
-
-
-
-		}
-		else if(SOCKET_ERROR == retValue)
+		int Result = recv(_Socket, Packet, sizeof(Packet), 0);
+		if (-1 == Result)
 		{
 			// 패킷 수신 실패
 			Mutex_.lock();
@@ -180,7 +177,17 @@ void SocketServer::ReceiveFunction(SOCKET _Socket)
 			Mutex_.unlock();
 		}
 
-		ZeroMemory(Packet, PACKET_SIZE);
+		Dispatcher_.PacketCheck(Packet);
+
+		for (size_t i = 0; i < ClientList_.size(); i++)
+		{
+			if (ClientList_[i] == _Socket)
+			{
+				continue;
+			}
+
+			send(ClientList_[i], Packet, 1024, 0);
+		}
 	}
 }
 
